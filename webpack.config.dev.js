@@ -1,6 +1,6 @@
-import webpack from "webpack";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import path from "path";
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
 
 // sets the environment to development
 process.env.NODE_ENV = "development";
@@ -34,7 +34,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ["babel-loader"],
+        use: ["babel-loader", "eslint-loader"],
       },
       {
         test: /(\.css)$/,
