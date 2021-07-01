@@ -2,13 +2,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as courseActions from "../../redux/actions/courseActions";
 import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
 
 // This is a stateful component fot demonstration porpoises
 
 class CoursesPage extends Component {
   static propTypes = {
     courses: PropTypes.array.isRequired,
-    dispatch: PropTypes.func.isRequired,
+    // createCourse: PropTypes.func.isRequired,
+    actions: PropTypes.object.isRequired,
   };
 
   state = {
@@ -25,7 +27,7 @@ class CoursesPage extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.dispatch(courseActions.createCourse(this.state.course));
+    this.props.actions.createCourse(this.state.course);
   };
 
   render() {
@@ -53,4 +55,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CoursesPage);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(courseActions, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoursesPage);
