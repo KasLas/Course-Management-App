@@ -9,7 +9,6 @@ import { bindActionCreators } from "redux";
 class CoursesPage extends Component {
   static propTypes = {
     courses: PropTypes.array.isRequired,
-    // createCourse: PropTypes.func.isRequired,
     actions: PropTypes.object.isRequired,
   };
 
