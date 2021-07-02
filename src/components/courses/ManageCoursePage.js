@@ -1,20 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as courseActions from "../../redux/actions/courseActions";
 import * as authorActions from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
+import CourseForm from "../courses/CourseForm";
+import { newCourse } from "../../../tools/mockData";
 
 // Destructuring the props in the function signature
-function ManageCoursePage({ courses, authors, loadAuthors, loadCourses }) {
+function ManageCoursePage({
+  courses,
+  authors,
+  loadAuthors,
+  loadCourses,
+  ...props
+}) {
+  const [course, setCourse] = useState({ ...props.course });
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     if (courses.length === 0) {
-      loadCourses.loadCourses().catch((error) => {
+      loadCourses().catch((error) => {
         alert("Loading courses failed" + error);
       });
     }
 
     if (authors.length === 0) {
-      loadAuthors.loadAuthors().catch((error) => {
+      loadAuthors().catch((error) => {
         alert("Loading authors failed" + error);
       });
     }
@@ -22,9 +33,13 @@ function ManageCoursePage({ courses, authors, loadAuthors, loadCourses }) {
   }, []);
 
   return (
-    <>
-      <h2>Manage Course</h2>
-    </>
+    <CourseForm
+      course={course}
+      authors={authors}
+      errors={errors}
+      onChange={() => {}}
+      onSave={() => {}}
+    />
   );
 }
 
@@ -33,10 +48,12 @@ ManageCoursePage.propTypes = {
   authors: PropTypes.array.isRequired,
   loadCourses: PropTypes.func.isRequired,
   loadAuthors: PropTypes.func.isRequired,
+  course: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
+    course: newCourse,
     courses: state.courses,
     authors: state.authors,
   };
