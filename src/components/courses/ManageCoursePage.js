@@ -32,12 +32,21 @@ function ManageCoursePage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function handleChange(event) {
+    const { value, name } = event.target;
+    // using javascript computed property(the key is a variable and is dynamic). This is used to handle all input onchange events
+    setCourse((prevCourse) => ({
+      ...prevCourse,
+      [name]: name === "authorId" ? parseInt(value, 10) : value,
+    }));
+  }
+
   return (
     <CourseForm
       course={course}
       authors={authors}
       errors={errors}
-      onChange={() => {}}
+      onChange={handleChange}
       onSave={() => {}}
     />
   );
