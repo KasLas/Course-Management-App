@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import * as courseActions from "../../redux/actions/courseActions";
-import * as authorActions from "../../redux/actions/authorActions";
+import { loadCourses, saveCourse } from "../../redux/actions/courseActions";
+import { loadAuthors } from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
 import CourseForm from "../courses/CourseForm";
 import { newCourse } from "../../../tools/mockData";
@@ -12,6 +12,8 @@ function ManageCoursePage({
   authors,
   loadAuthors,
   loadCourses,
+  saveCourse,
+  history,
   ...props
 }) {
   const [course, setCourse] = useState({ ...props.course });
@@ -30,7 +32,7 @@ function ManageCoursePage({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   function handleChange(event) {
     const { value, name } = event.target;
@@ -41,13 +43,20 @@ function ManageCoursePage({
     }));
   }
 
+  function handleSave(event) {
+    event.preventDefault();
+    saveCourse(course).then(() => {
+      history.push("/courses");
+    });
+  }
+
   return (
     <CourseForm
       course={course}
       authors={authors}
       errors={errors}
       onChange={handleChange}
-      onSave={() => {}}
+      onSave={handleSave}
     />
   );
 }
@@ -57,12 +66,26 @@ ManageCoursePage.propTypes = {
   authors: PropTypes.array.isRequired,
   loadCourses: PropTypes.func.isRequired,
   loadAuthors: PropTypes.func.isRequired,
+  saveCourse: PropTypes.func.isRequired,
   course: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state) {
+export function getCourseBySlug(courses, slug) {
+  return courses.find((course) => course.slug === slug) || null;
+}
+
+// ownProps is populated by the component
+function mapStateToProps(state, ownProps) {
+  const slug = ownProps.match.params.slug;
+
+  const course =
+    slug && state.courses.length > 0
+      ? getCourseBySlug(state.courses, slug)
+      : newCourse;
+
   return {
-    course: newCourse,
+    course: course,
     courses: state.courses,
     authors: state.authors,
   };
@@ -70,8 +93,9 @@ function mapStateToProps(state) {
 
 // Demonstration of manStateToProps as an object not a function. This is an alternative way to handle actions
 const mapDispatchToProps = {
-  loadCourses: courseActions.loadCourses,
-  loadAuthors: authorActions.loadAuthors,
+  saveCourse,
+  loadCourses,
+  loadAuthors,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageCoursePage);
