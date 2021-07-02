@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import * as courseActions from "../../redux/actions/courseActions";
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
+import CourseList from "./CourseList";
 
 // This is a stateful component fot demonstration porpoises
 
@@ -22,10 +23,7 @@ class CoursesPage extends Component {
     return (
       <>
         <h2>Courses</h2>
-
-        {this.props.courses.map((course) => (
-          <div key={course.title}>{course.title}</div>
-        ))}
+        <CourseList courses={this.props.courses} />
       </>
     );
   }
