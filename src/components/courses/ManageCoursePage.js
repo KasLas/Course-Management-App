@@ -5,6 +5,7 @@ import { loadAuthors } from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
 import CourseForm from "../courses/CourseForm";
 import { newCourse } from "../../../tools/mockData";
+import Spinner from "../common/Spinner";
 
 // Destructuring the props in the function signature
 function ManageCoursePage({
@@ -18,6 +19,7 @@ function ManageCoursePage({
 }) {
   const [course, setCourse] = useState({ ...props.course });
   const [errors, setErrors] = useState({});
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (courses.length === 0) {
@@ -46,19 +48,23 @@ function ManageCoursePage({
   }
 
   function handleSave(event) {
+    setIsSaving(true);
     event.preventDefault();
     saveCourse(course).then(() => {
       history.push("/courses");
     });
   }
 
-  return (
+  return authors.length === 0 || course.length === 0 ? (
+    <Spinner />
+  ) : (
     <CourseForm
       course={course}
       authors={authors}
       errors={errors}
       onChange={handleChange}
       onSave={handleSave}
+      saving={isSaving}
     />
   );
 }
