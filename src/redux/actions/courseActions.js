@@ -1,5 +1,6 @@
 import * as types from "./actionTypes";
 import * as courseApi from "../../api/courseApi";
+import { beginApiCall } from "./apiStatussActions";
 
 // This is a action creator which has a type(a name) and returns
 // the argument(to be passed along to the reducer which updates the state with the argument)
@@ -19,6 +20,7 @@ export function createCourseSuccess(course) {
 // thunk function
 export function loadCourses() {
   return function (dispatch) {
+    dispatch(beginApiCall());
     return courseApi
       .getCourses()
       .then((courses) => {
@@ -33,6 +35,7 @@ export function loadCourses() {
 export function saveCourse(course) {
   // eslint-disable-next-line no-unused-vars
   return function (dispatch, getState) {
+    dispatch(beginApiCall());
     return courseApi
       .saveCourse(course)
       .then((savedCourse) => {
