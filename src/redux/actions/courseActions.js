@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import * as courseApi from "../../api/courseApi";
-import { beginApiCall } from "./apiStatussActions";
+import { beginApiCall, apiCallError } from "./apiStatussActions";
 
 // This is a action creator which has a type(a name) and returns
 // the argument(to be passed along to the reducer which updates the state with the argument)
@@ -27,6 +27,7 @@ export function loadCourses() {
         dispatch(loadCoursesSuccess(courses));
       })
       .catch((error) => {
+        dispatch(apiCallError(error));
         throw error;
       });
   };
@@ -44,6 +45,7 @@ export function saveCourse(course) {
           : dispatch(createCourseSuccess(savedCourse));
       })
       .catch((error) => {
+        dispatch(apiCallError(error));
         throw error;
       });
   };

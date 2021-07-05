@@ -9,7 +9,7 @@ const CourseForm = ({
   onSave,
   onChange,
   saving = false,
-  errors = {},
+  errors,
 }) => {
   return (
     <form onSubmit={onSave}>
