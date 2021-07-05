@@ -7,6 +7,7 @@ import { bindActionCreators } from "redux";
 import CourseList from "./CourseList";
 import { Redirect } from "react-router-dom";
 import Spinner from "../common/Spinner";
+import { toast } from "react-toastify";
 
 // This is a stateful component fot demonstration porpoises
 
@@ -16,6 +17,8 @@ class CoursesPage extends Component {
     authors: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    deleteCourse: PropTypes.func.isRequired,
+    handleDeleteCourse: PropTypes.func.isRequired,
   };
 
   state = {
@@ -27,16 +30,33 @@ class CoursesPage extends Component {
     const { courses, authors, actions } = this.props;
 
     if (courses.length === 0) {
-      actions.loadCourses.loadCourses().catch((error) => {
+      actions.loadCourses().catch((error) => {
         alert("Loading courses failed" + error);
       });
     }
     if (authors.length === 0) {
-      actions.loadAuthors.loadAuthors().catch((error) => {
+      actions.loadAuthors().catch((error) => {
         alert("Loading authors failed" + error);
       });
     }
   }
+
+  // handleDeleteCourse = (course) => {
+  //   toast.success("Course deleted");
+  //   this.props.actions.deleteCourse(course).catch((error) => {
+  //     toast.error("Delete failed." + error.message, { autoClose: false });
+  //   });
+  // };
+
+  // the async way
+  handleDeleteCourse = async (course) => {
+    toast.success("Course deleted");
+    try {
+      await this.props.actions.deleteCourse(course);
+    } catch (error) {
+      toast.error("Delete failed." + error.message, { autoClose: false });
+    }
+  };
 
   render() {
     return (
@@ -54,7 +74,10 @@ class CoursesPage extends Component {
             >
               Add Course
             </button>
-            <CourseList courses={this.props.courses} />
+            <CourseList
+              onDeleteClick={this.handleDeleteCourse}
+              courses={this.props.courses}
+            />
           </>
         )}
       </>
@@ -84,8 +107,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      loadCourses: bindActionCreators(courseActions, dispatch),
-      loadAuthors: bindActionCreators(authorActions, dispatch),
+      loadCourses: bindActionCreators(courseActions.loadCourses, dispatch),
+      loadAuthors: bindActionCreators(authorActions.loadAuthors, dispatch),
+      deleteCourse: bindActionCreators(courseActions.deleteCourse, dispatch),
     },
   };
 }
