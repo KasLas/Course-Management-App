@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import CourseForm from "../courses/CourseForm";
 import { newCourse } from "../../../tools/mockData";
 import Spinner from "../common/Spinner";
+import { toast } from "react-toastify";
 
 // Destructuring the props in the function signature
 function ManageCoursePage({
@@ -51,6 +52,7 @@ function ManageCoursePage({
     setIsSaving(true);
     event.preventDefault();
     saveCourse(course).then(() => {
+      toast.success("Course saved.");
       history.push("/courses");
     });
   }
